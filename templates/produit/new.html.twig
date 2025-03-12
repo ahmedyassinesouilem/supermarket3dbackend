@@ -1,0 +1,46 @@
+{# templates/produit/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>Ajouter un produit</h2>
+
+    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+    
+    <div class="mb-3">
+        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.nom) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.prix, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.prix) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.model, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.model, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.model) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(form.rayon, null, {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(form.rayon, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(form.rayon) }}
+    </div>
+
+    <button type="submit" class="btn btn-success">Ajouter</button>
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {{ form_end(form) }}
+</div>
+{% endblock %}
