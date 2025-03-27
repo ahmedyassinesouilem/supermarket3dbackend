@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use App\Repository\ProduitRepository;
+use App\Repository\ProduitsRepository;
 #[Route('/api/produits')]
 class ProduitApiController extends AbstractController
 {
@@ -38,7 +38,6 @@ class ProduitApiController extends AbstractController
             'Access-Control-Allow-Headers' => 'Content-Type'
         ]);
     }
-
     #[Route('/api/produits', name: 'api_produits', methods: ['GET'])]
     public function getProduits(ProduitRepository $produitRepository): JsonResponse
     {
@@ -57,6 +56,7 @@ class ProduitApiController extends AbstractController
     
         return $this->json($data);
     }
+    
     
 
     #[Route('', name: 'api_produit_create', methods: ['POST'])]
@@ -92,6 +92,18 @@ class ProduitApiController extends AbstractController
 
         return $this->json(['message' => 'Produit ajouté !'], Response::HTTP_CREATED);
     }
+    #[Route('/{id}', name: 'api_produit_show', methods: ['GET'])]
+public function show(Produits $produit): JsonResponse
+{
+    return $this->json([
+        'id' => $produit->getId(),
+        'nom' => $produit->getNom(),
+        'prix' => $produit->getPrix(),
+        'modelPath' => $produit->getModelPath(),
+        'rayon' => $produit->getRayon() ? $produit->getRayon()->getId() : null,
+    ]);
+}
+
 
     #[Route('/{id}', name: 'api_produit_update', methods: ['PUT'])]
     public function update(Request $request, Produits $produit, EntityManagerInterface $entityManager): JsonResponse
