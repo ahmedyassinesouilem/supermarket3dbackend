@@ -2,6 +2,8 @@
 // src/Entity/Produits.php
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -26,6 +28,17 @@ class Produits
     #[ORM\ManyToOne(targetEntity: Rayon::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?Rayon $rayon = null;
+
+    /**
+     * @var Collection<int, PanierProduit>
+     */
+    #[ORM\OneToMany(targetEntity: PanierProduit::class, mappedBy: 'produit')]
+    private Collection $panierProduits;
+
+    public function __construct()
+    {
+        $this->panierProduits = new ArrayCollection();
+    }
 
     // Getters et Setters
     public function getId(): ?int
@@ -74,6 +87,36 @@ class Produits
     public function setRayon(?Rayon $rayon): self
     {
         $this->rayon = $rayon;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PanierProduit>
+     */
+    public function getPanierProduits(): Collection
+    {
+        return $this->panierProduits;
+    }
+
+    public function addPanierProduit(PanierProduit $panierProduit): static
+    {
+        if (!$this->panierProduits->contains($panierProduit)) {
+            $this->panierProduits->add($panierProduit);
+            $panierProduit->setProduit($this);
+        }
+
+        return $this;
+    }
+
+    public function removePanierProduit(PanierProduit $panierProduit): static
+    {
+        if ($this->panierProduits->removeElement($panierProduit)) {
+            // set the owning side to null (unless already changed)
+            if ($panierProduit->getProduit() === $this) {
+                $panierProduit->setProduit(null);
+            }
+        }
+
         return $this;
     }
 }
