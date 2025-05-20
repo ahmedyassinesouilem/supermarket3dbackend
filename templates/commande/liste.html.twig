@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="d-flex">
+    {% include 'partials/sidebar.html.twig' %}
+
+        <!-- Contenu principal avec marge à gauche -->
+        <div class="col-md-9 offset-md-3 mt-4">
+            <h2>Liste des commandes</h2>
+
+            {% for commande in commandes %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p><strong>ID :</strong> {{ commande.id }}</p>
+                    <p><strong>Date :</strong> {{ commande.date|date('Y-m-d') }}</p>
+
+                    <p><strong>Utilisateur :</strong>
+                        {% if commande.user %}
+                            {{ commande.user.nom }} {{ commande.user.prenom }}<br>
+                            <p>{{ commande.user.numTel }}</p>
+                            <p>{{ commande.user.ville }} {{ commande.user.adress }}</p>
+                        {% else %}
+                            Utilisateur inconnu
+                        {% endif %}
+                    </p>
+
+                    <p><strong>État :</strong>
+                        {% if commande.etat %}
+                            <span class="badge bg-success">Confirmée</span>
+                        {% elseif commande.etat == false %}
+                            <span class="badge bg-danger">Annuler</span>
+                        {% else %}
+                            <span class="badge bg-warning">En attente</span>
+                        
+                        {% endif %}
+                    </p>
+
+                    <h5>Produits associés à la commande :</h5>
+                    <ul>
+                        {% for panierProduit in commande.commandeProduits %}
+                            <li>{{ panierProduit.produit.nom }} - {{ panierProduit.quantite }} unités</li>
+                        {% else %}
+                            <p>Aucun produit associé</p>
+                        {% endfor %}
+                    </ul>
+
+                    {% if not commande.etat %}
+                        <a href="{{ path('commande_confirmer', {id: commande.id}) }}" class="btn btn-success">
+                            Confirmer
+                        </a>
+                        <a href="{{ path('commande_annuler', {id: commande.id}) }}" class="btn btn-danger">
+                            Annuler
+                        </a>
+                        <a href="{{ path('commande_supprimer', {id: commande.id}) }}" class="btn btn-danger">suprimer</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% else %}
+                <p>Aucune commande disponible.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -35,6 +35,18 @@ class Produits
     #[ORM\OneToMany(targetEntity: PanierProduit::class, mappedBy: 'produit')]
     private Collection $panierProduits;
 
+    #[ORM\ManyToOne(inversedBy: 'Produits')]
+    private ?Etagers $etagers = null;
+
+    #[ORM\Column]
+    private ?int $stock = null;
+
+    #[ORM\Column(length: 500, nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\Column(length: 1000)]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->panierProduits = new ArrayCollection();
@@ -116,6 +128,54 @@ class Produits
                 $panierProduit->setProduit(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtagers(): ?Etagers
+    {
+        return $this->etagers;
+    }
+
+    public function setEtagers(?Etagers $etagers): static
+    {
+        $this->etagers = $etagers;
+
+        return $this;
+    }
+
+    public function getStock(): ?int
+    {
+        return $this->stock;
+    }
+
+    public function setStock(int $stock): static
+    {
+        $this->stock = $stock;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }

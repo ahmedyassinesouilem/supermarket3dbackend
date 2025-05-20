@@ -6,6 +6,7 @@
 # config/services.yaml
 parameters:
     models_directory: '%kernel.project_dir%/public/uploads/models'
+    photos_directory: '%kernel.project_dir%/public/uploads/photos'
 
 
 services:

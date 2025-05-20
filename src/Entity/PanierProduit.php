@@ -24,6 +24,9 @@ class PanierProduit
     #[ORM\Column]
     private ?int $quantite = 1;
 
+    #[ORM\ManyToOne(inversedBy: 'commandeProduits')]
+    private ?Commande $commande = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class PanierProduit
     public function setQuantite(int $quantite): static
     {
         $this->quantite = $quantite;
+
+        return $this;
+    }
+
+    public function getCommande(): ?Commande
+    {
+        return $this->commande;
+    }
+
+    public function setCommande(?Commande $commande): static
+    {
+        $this->commande = $commande;
 
         return $this;
     }

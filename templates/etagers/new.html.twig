@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="d-flex">
+    {% include 'partials/sidebar.html.twig' %}
+    <div class="container mt-5">
+        <h2>Ajouter une étagère</h2>
+
+        {{ form_start(form) }}
+        <div class="mb-3">
+            {{ form_label(form.num, 'Numéro', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.num, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.num) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.nbrPlaces, 'Nombre de places', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nbrPlaces, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nbrPlaces) }}
+        </div>
+        <div class="mb-3">
+            {{ form_label(form.rayon, 'Nombre de places', {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.rayon, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.rayon) }}
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        {{ form_end(form) }}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">{{ message }}</div>
+        {% endfor %}
+    </div>
+    </div>
+{% endblock %}

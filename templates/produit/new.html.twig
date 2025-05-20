@@ -1,46 +1,101 @@
-{# templates/produit/new.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
-<div class="container mt-5">
-    <h2>Ajouter un produit</h2>
+<div class="d-flex">
+    {% include 'partials/sidebar.html.twig' %}
 
-    {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-    
-    <div class="mb-3">
-        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.nom) }}
+    <div class="container mt-5">
+        <h2>Ajouter un produit</h2>
+
+        {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+        
+        <div class="mb-3">
+            {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.prix, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.prix) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.stock, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.stock, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.stock) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.description, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.description) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.model, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.model, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.model) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.rayon, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.rayon, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.rayon) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.etagers, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.etagers, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.etagers) }}
+        </div>
+
+        <div class="mb-3">
+            {{ form_label(form.photo, null, {'label_attr': {'class': 'form-label'}}) }}
+            {{ form_widget(form.photo, {'attr': {'class': 'form-control'}}) }}
+            {{ form_errors(form.photo) }}
+        </div>
+
+        <button type="submit" class="btn btn-success">Ajouter</button>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger mt-3">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">{{ message }}</div>
+        {% endfor %}
+
+        {{ form_end(form) }}
     </div>
-
-    <div class="mb-3">
-        {{ form_label(form.prix, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.prix) }}
-    </div>
-
-    <div class="mb-3">
-        {{ form_label(form.model, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.model, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.model) }}
-    </div>
-
-    <div class="mb-3">
-        {{ form_label(form.rayon, null, {'label_attr': {'class': 'form-label'}}) }}
-        {{ form_widget(form.rayon, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.rayon) }}
-    </div>
-
-    <button type="submit" class="btn btn-success">Ajouter</button>
-
-    {% for message in app.flashes('error') %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endfor %}
-
-    {% for message in app.flashes('success') %}
-        <div class="alert alert-success">{{ message }}</div>
-    {% endfor %}
-
-    {{ form_end(form) }}
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const rayonSelect = document.querySelector('#produit_rayon');
+        const etagerSelect = document.querySelector('#produit_etagers');
+    
+        rayonSelect.addEventListener('change', function () {
+            const rayonId = this.value;
+            etagerSelect.innerHTML = '<option value="">Chargement...</option>';
+    
+            fetch(`/etagers/by-rayon/${rayonId}`)
+                .then(response => response.json())
+                .then(data => {
+                    etagerSelect.innerHTML = '<option value="">-- Choisir une étagère --</option>';
+                    data.forEach(etager => {
+                        const option = document.createElement('option');
+                        option.value = etager.id;
+                        option.textContent = etager.num;
+                        etagerSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    etagerSelect.innerHTML = '<option value="">Erreur de chargement</option>';
+                    console.error('Erreur:', error);
+                });
+        });
+    });
+    </script>
+    
 {% endblock %}

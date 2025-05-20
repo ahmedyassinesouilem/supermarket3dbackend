@@ -32,6 +32,7 @@ class Panier
     public function __construct()
     {
         $this->panierProduits = new ArrayCollection();
+        $this->createAt = new \DateTimeImmutable(); 
     }
 
     public function getId(): ?int

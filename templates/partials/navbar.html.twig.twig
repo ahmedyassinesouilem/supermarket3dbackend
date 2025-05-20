@@ -1,0 +1,25 @@
+
+<div class="offcanvas offcanvas-start show position-static border-end" id="sidebar" style="width: 240px;" data-bs-backdrop="false">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">BBBootstrap</h5>
+    </div>
+    <div class="offcanvas-body d-flex flex-column justify-content-between">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.attributes.get('_route') == 'app_home' %}active{% endif %}" href="{{ path('app_home') }}">
+                    <i class="bi bi-grid"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if app.request.attributes.get('_route') == 'app_users' %}active{% endif %}" href="{{ path('app_users') }}">
+                    <i class="bi bi-person"></i> Users
+                </a>
+            </li>
+        </ul>
+        <div>
+            <a class="nav-link text-danger" href="#">
+                <i class="bi bi-box-arrow-right"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>

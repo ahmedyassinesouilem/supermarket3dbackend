@@ -26,9 +26,16 @@ class Rayon
     #[ORM\OneToMany(targetEntity: Produits::class, mappedBy: 'rayon')]
     private Collection $produits;
 
+    /**
+     * @var Collection<int, Etagers>
+     */
+    #[ORM\OneToMany(targetEntity: Etagers::class, mappedBy: 'rayon')]
+    private Collection $etagers;
+
     public function __construct()
     {
         $this->produits = new ArrayCollection();
+        $this->etagers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -72,6 +79,36 @@ class Rayon
             // set the owning side to null (unless already changed)
             if ($produit->getRayon() === $this) {
                 $produit->setRayon(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Etagers>
+     */
+    public function getEtagers(): Collection
+    {
+        return $this->etagers;
+    }
+
+    public function addEtager(Etagers $etager): static
+    {
+        if (!$this->etagers->contains($etager)) {
+            $this->etagers->add($etager);
+            $etager->setRayon($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEtager(Etagers $etager): static
+    {
+        if ($this->etagers->removeElement($etager)) {
+            // set the owning side to null (unless already changed)
+            if ($etager->getRayon() === $this) {
+                $etager->setRayon(null);
             }
         }
 

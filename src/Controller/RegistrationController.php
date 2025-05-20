@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,35 +14,74 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 class RegistrationController extends AbstractController
 {
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
-    {
+public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+{
+    try {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['email'], $data['plainPassword'])) {
-            throw new BadRequestHttpException('Email and plainPassword are required');
+        if (!isset($data['email'], $data['plainPassword'], $data['nom'], $data['prenom'], $data['ville'], $data['adress'], $data['numTel'])) {
+            throw new \Exception('Tous les champs sont requis : email, plainPassword, nom, prenom, ville, adress, numTel');
+        }
+
+        if ($entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']])) {
+            throw new \Exception('Cet email est déjà utilisé');
         }
 
         $user = new User();
         $user->setEmail($data['email']);
-        
-        // Assurer que l'email est unique (API Platform gère cela automatiquement)
-        if ($entityManager->getRepository(User::class)->findOneBy(['email' => $data['email']])) {
-            throw new BadRequestHttpException('This email is already registered');
-        }
-
-        // Encoder le mot de passe
-        $plainPassword = $data['plainPassword'];
-        $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
+        $user->setNom($data['nom']);
+        $user->setPrenom($data['prenom']);
+        $user->setVille($data['ville']);
+        $user->setAdress($data['adress']);
+        $user->setNumTel((int)$data['numTel']);
+        $user->setPassword($userPasswordHasher->hashPassword($user, $data['plainPassword']));
+        $user->setRoles(['ROLE_USER']);
         $entityManager->persist($user);
         $entityManager->flush();
 
         return $this->json([
-            'message' => 'User successfully registered',
-            'user' => [
-                'id' => $user->getId(),
-                'email' => $user->getEmail(),
-            ]
+            'message' => 'Utilisateur inscrit avec succès',
         ], Response::HTTP_CREATED);
+
+    } catch (\Throwable $e) {
+        return $this->json([
+            'error' => $e->getMessage(),
+        ], 500);
     }
+}
+    #[Route ('/api/regigister_Admin', name: 'api_register_admin', methods: ['POST'])]
+    public function registerAdmin(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
+    {
+        try {
+            $data = json_decode($request->getContent(), true);
+
+            if (!isset($data['email'], $data['plainPassword'], $data['nom'], $data['prenom'])) {
+                throw new \Exception('Tous les champs sont requis : email, plainPassword, nom, prenom');
+            }
+
+            if ($entityManager->getRepository(Admin::class)->findOneBy(['email' => $data['email']])) {
+                throw new \Exception('Cet email est déjà utilisé');
+            }
+
+            $admin = new Admin();
+            $admin->setEmail($data['email']);
+            $admin->setNom($data['nom']);
+            $admin->setPrenom($data['prenom']);
+            $admin->setPassword($userPasswordHasher->hashPassword($admin, $data['plainPassword']));
+            $admin->setRoles(['ROLE_ADMIN']);
+            $entityManager->persist($admin);
+            $entityManager->flush();
+
+            return $this->json([
+                'message' => 'Admin inscrit avec succès',
+            ], Response::HTTP_CREATED);
+
+        } catch (\Throwable $e) {
+            return $this->json([
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
 }
